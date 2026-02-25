@@ -38,3 +38,8 @@ public/fonts/JetBrains/JetBrainsMono-VariableFont_wght.ttf filter=lfs diff=lfs m
 public/fonts/Söhne/Söhne-Buch.otf filter=lfs diff=lfs merge=lfs -text
 public/fonts/Söhne/Söhne-Kräftig.otf filter=lfs diff=lfs merge=lfs -text
 public/fonts/Söhne/Söhne-Leicht.otf filter=lfs diff=lfs merge=lfs -text
+dist/fonts/JetBrains/JetBrainsMono-Italic-VariableFont_wght.ttf filter=lfs diff=lfs merge=lfs -text
+dist/fonts/JetBrains/JetBrainsMono-VariableFont_wght.ttf filter=lfs diff=lfs merge=lfs -text
+dist/fonts/Söhne/Söhne-Buch.otf filter=lfs diff=lfs merge=lfs -text
+dist/fonts/Söhne/Söhne-Kräftig.otf filter=lfs diff=lfs merge=lfs -text
+dist/fonts/Söhne/Söhne-Leicht.otf filter=lfs diff=lfs merge=lfs -text

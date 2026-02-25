@@ -6,7 +6,6 @@ colorTo: blue
 sdk: static
 pinned: false
 short_description: Run LFM2.5-1.2B-Thinking directly in your browser on WebGPU
-app_build_command: npm run build
 app_file: dist/index.html
 models:
 - LiquidAI/LFM2.5-1.2B-Thinking
