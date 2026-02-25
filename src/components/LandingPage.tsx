@@ -49,7 +49,7 @@ export function LandingPage({ onStart, status, isLoading, showChat }: LandingPag
   const readyToStart = status.state === "ready";
 
   return (
-    <div className="brand-surface relative flex h-screen flex-col overflow-hidden text-black">
+    <div className="brand-surface relative flex h-full min-h-full flex-col overflow-x-hidden overflow-y-auto text-black">
       <div className="landing-brand-glow absolute inset-0" />
 
       <div
@@ -59,7 +59,7 @@ export function LandingPage({ onStart, status, isLoading, showChat }: LandingPag
       />
 
       <div
-        className={`relative z-10 mx-auto flex h-full w-full max-w-7xl flex-col px-6 pb-10 pt-8 sm:px-8 lg:px-14 transition-all duration-700 ${
+        className={`relative z-10 mx-auto flex min-h-full w-full max-w-7xl flex-col px-6 pb-8 pt-6 sm:px-8 sm:pb-10 sm:pt-8 lg:px-14 transition-all duration-700 ${
           hideMainContent
             ? "opacity-0 translate-y-4 pointer-events-none"
             : "opacity-100"
@@ -77,7 +77,7 @@ export function LandingPage({ onStart, status, isLoading, showChat }: LandingPag
           </p>
         </header>
 
-        <section className="mt-14 flex flex-col items-center text-center">
+        <section className="mt-8 flex flex-col items-center text-center sm:mt-12 lg:mt-14">
           <div className="animate-rise-in-delayed space-y-5">
             <p className="font-support text-xs uppercase tracking-[0.2em] text-[#5505afb3]">
               Capable and efficient general-purpose AI systems at every scale
@@ -109,7 +109,7 @@ export function LandingPage({ onStart, status, isLoading, showChat }: LandingPag
           </div>
         </section>
 
-        <section className="mt-10 flex flex-col lg:flex-row gap-4">
+        <section className="mt-6 flex flex-col gap-4 sm:mt-8 lg:mt-10 lg:flex-row">
           {cards.map(({ eyebrow, title, body, Icon }, idx) => (
             <article
               key={title}
@@ -134,7 +134,7 @@ export function LandingPage({ onStart, status, isLoading, showChat }: LandingPag
           ))}
         </section>
 
-        <section className="mt-10 flex flex-col items-center animate-rise-in" style={{ animationDelay: "400ms" }}>
+        <section className="mt-6 flex flex-col items-center animate-rise-in sm:mt-8 lg:mt-10" style={{ animationDelay: "400ms" }}>
           <button
             onClick={onStart}
             className="inline-flex w-full max-w-sm items-center justify-center gap-2 rounded-xl bg-black px-6 py-3.5 text-base font-semibold text-white transition-transform duration-200 hover:-translate-y-0.5 hover:bg-[#5505af] cursor-pointer"

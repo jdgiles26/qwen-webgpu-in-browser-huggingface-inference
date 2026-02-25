@@ -122,7 +122,7 @@ export function LLMProvider({ children }: { children: ReactNode }) {
 
     try {
       await generator(apiMessages, {
-        max_new_tokens: 8192,
+        max_new_tokens: 65536,
         streamer,
         stopping_criteria: stoppingCriteria.current,
         do_sample: false,
