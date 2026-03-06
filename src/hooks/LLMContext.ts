@@ -20,12 +20,27 @@ export type LoadingStatus =
   | { state: "error"; error: string };
 
 export type ReasoningEffort = "low" | "medium" | "high";
+export type AgentMode = "local" | "ollama";
+
+export interface OllamaConfig {
+  baseUrl: string;
+  model: string;
+  systemPrompt: string;
+  temperature: number;
+  numPredict: number;
+}
 
 export interface LLMContextValue {
   status: LoadingStatus;
   messages: ChatMessage[];
   isGenerating: boolean;
   tps: number;
+  agentMode: AgentMode;
+  setAgentMode: (mode: AgentMode) => void;
+  ollamaConfig: OllamaConfig;
+  updateOllamaConfig: (config: Partial<OllamaConfig>) => void;
+  ollamaModels: string[];
+  refreshOllamaModels: () => Promise<void>;
   reasoningEffort: ReasoningEffort;
   setReasoningEffort: (effort: ReasoningEffort) => void;
   loadModel: () => void;

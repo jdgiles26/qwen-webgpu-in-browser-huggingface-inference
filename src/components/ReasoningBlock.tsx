@@ -22,7 +22,7 @@ export function ReasoningBlock({
     <div className="mb-3">
       <button
         onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-2 text-xs text-[#6d6d6d] hover:text-black transition-colors cursor-pointer"
+        className="flex cursor-pointer items-center gap-2 text-xs text-[#557296] transition-colors hover:text-[#0b52d8]"
       >
         <Brain className="h-3.5 w-3.5" />
         {isThinking ? (
@@ -35,7 +35,7 @@ export function ReasoningBlock({
         />
       </button>
       {open && (
-        <div className="mt-2 rounded-lg border border-[#0000001f] bg-[#f5f5f5] px-3 py-2 text-xs text-[#6d6d6d] whitespace-pre-wrap">
+        <div className="mt-2 whitespace-pre-wrap rounded-2xl border border-[#d8ecff] bg-white/70 px-3 py-2 text-xs text-[#486685] shadow-[inset_0_1px_0_rgba(255,255,255,0.8)]">
           {reasoning.trim()}
         </div>
       )}

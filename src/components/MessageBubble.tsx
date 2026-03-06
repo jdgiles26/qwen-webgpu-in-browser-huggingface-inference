@@ -14,7 +14,7 @@ import { useLLM } from "../hooks/useLLM";
 import { ReasoningBlock } from "./ReasoningBlock";
 import type { ChatMessage } from "../hooks/LLMContext";
 
-const math = createMathPlugin({singleDollarTextMath: true})
+const math = createMathPlugin({ singleDollarTextMath: true });
 
 interface MessageBubbleProps {
   msg: ChatMessage;
@@ -174,13 +174,13 @@ export function MessageBubble({
               e.target.style.height = e.target.scrollHeight + "px";
             }}
             onKeyDown={handleKeyDown}
-            className="w-full rounded-xl border border-[#0000001f] bg-white px-4 py-3 text-sm text-black placeholder-[#6d6d6d] focus:border-[#5505af] focus:outline-none focus:ring-1 focus:ring-[#5505af] resize-none shadow-sm"
+            className="w-full resize-none rounded-2xl border border-[#d8ecff] bg-white/82 px-4 py-3 text-sm text-[#081325] placeholder-[#557296] shadow-[inset_0_1px_0_rgba(255,255,255,0.9)] focus:border-[#1f7dff] focus:outline-none focus:ring-2 focus:ring-[#a5e8ff]"
             rows={1}
           />
           <div className="flex justify-end gap-2">
             <button
               onClick={handleCancel}
-              className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium text-[#6d6d6d] hover:text-black border border-[#0000001f] hover:bg-[#f5f5f5] transition-colors cursor-pointer"
+              className="flex cursor-pointer items-center gap-1.5 rounded-full border border-white/55 bg-white/60 px-3 py-1.5 text-xs font-medium text-[#557296] transition-colors hover:text-[#0b52d8]"
             >
               <X className="h-3 w-3" />
               Cancel
@@ -188,7 +188,7 @@ export function MessageBubble({
             <button
               onClick={handleSave}
               disabled={!editValue.trim()}
-              className="flex items-center gap-1.5 rounded-lg bg-black px-3 py-1.5 text-xs font-medium text-white hover:bg-[#1f1f1f] disabled:opacity-40 transition-colors cursor-pointer"
+              className="flex cursor-pointer items-center gap-1.5 rounded-full bg-[linear-gradient(135deg,#0b52d8_0%,#1f7dff_45%,#8ff2ff_100%)] px-3 py-1.5 text-xs font-medium text-white transition-colors disabled:opacity-40"
             >
               <Check className="h-3 w-3" />
               Update
@@ -206,7 +206,7 @@ export function MessageBubble({
       {isUser && !isGenerating && (
         <button
           onClick={handleEdit}
-          className="mt-3 opacity-0 group-hover:opacity-100 transition-opacity text-[#6d6d6d] hover:text-black cursor-pointer"
+          className="mt-3 cursor-pointer text-[#557296] opacity-0 transition-opacity group-hover:opacity-100 hover:text-[#0b52d8]"
           title="Edit message"
         >
           <Pencil className="h-3.5 w-3.5" />
@@ -216,8 +216,8 @@ export function MessageBubble({
       <div
         className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
           isUser
-            ? "bg-black text-white rounded-br-md whitespace-pre-wrap"
-            : "bg-white text-black rounded-bl-md border border-[#0000001f] shadow-sm"
+            ? "rounded-br-md bg-[linear-gradient(135deg,#0b52d8_0%,#1f7dff_45%,#89edff_100%)] text-white whitespace-pre-wrap shadow-[0_14px_32px_rgba(31,125,255,0.28)]"
+            : "rounded-bl-md border border-[#d8ecff] bg-white/82 text-[#081325] shadow-[0_12px_30px_rgba(20,91,183,0.08)]"
         }`}
       >
         {!isUser && msg.reasoning && (
@@ -241,16 +241,16 @@ export function MessageBubble({
             </Streamdown>
           )
         ) : !isUser && !isStreaming ? (
-          <p className="italic text-[#6d6d6d]">No response</p>
+          <p className="italic text-[#557296]">No response</p>
         ) : null}
       </div>
 
       {!isUser && !isStreaming && !isGenerating && (
-        <div className="mt-3 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="mt-3 flex items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
           {msg.content && (
             <button
               onClick={handleCopy}
-              className="rounded-md p-1 text-[#6d6d6d] hover:text-black hover:bg-[#f5f5f5] transition-colors cursor-pointer"
+              className="cursor-pointer rounded-md p-1 text-[#557296] transition-colors hover:bg-white/70 hover:text-[#0b52d8]"
               title="Copy response"
             >
               {copied ? (
@@ -262,7 +262,7 @@ export function MessageBubble({
           )}
           <button
             onClick={() => retryMessage(index)}
-            className="rounded-md p-1 text-[#6d6d6d] hover:text-black hover:bg-[#f5f5f5] transition-colors cursor-pointer"
+            className="cursor-pointer rounded-md p-1 text-[#557296] transition-colors hover:bg-white/70 hover:text-[#0b52d8]"
             title="Retry"
           >
             <RotateCcw className="h-3.5 w-3.5" />

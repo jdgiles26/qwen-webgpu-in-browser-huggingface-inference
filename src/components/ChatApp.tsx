@@ -1,9 +1,12 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { Send, Square, Plus } from "lucide-react";
+import { Send, Square, Plus, LogOut, House, Download } from "lucide-react";
 
 import { useLLM } from "../hooks/useLLM";
 import { MessageBubble } from "./MessageBubble";
 import { StatusBar } from "./StatusBar";
+import { FloatingGhost } from "./FloatingGhost";
+import { AgentModeControls } from "./AgentModeControls";
+import { EngineerWorkflowPresets } from "./EngineerWorkflowPresets";
 
 const EXAMPLE_PROMPTS = [
   {
@@ -32,7 +35,7 @@ interface ChatInputProps {
 }
 
 function ChatInput({ showDisclaimer, animated }: ChatInputProps) {
-  const { send, stop, status, isGenerating } = useLLM();
+  const { send, stop, status, isGenerating, agentMode } = useLLM();
   const isReady = status.state === "ready";
   const [input, setInput] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -64,12 +67,18 @@ function ChatInput({ showDisclaimer, animated }: ChatInputProps) {
   return (
     <div className={`w-full ${animated ? "animate-rise-in-delayed" : ""}`}>
       <form onSubmit={handleSubmit} className="mx-auto max-w-3xl">
-        <div className="relative">
+        <div className="brand-chrome relative rounded-[1.6rem] p-2">
           <textarea
             ref={textareaRef}
-            className="w-full rounded-xl border border-[#0000001f] bg-white px-4 py-3 pb-11 text-[15px] text-black placeholder-[#6d6d6d] focus:border-[#5505af] focus:outline-none focus:ring-1 focus:ring-[#5505af] disabled:opacity-50 resize-none max-h-40 shadow-sm"
+            className="max-h-40 w-full resize-none rounded-[1.1rem] border border-[#d7edff] bg-white/76 px-4 py-3 pb-11 text-[15px] text-[#081325] placeholder-[#5f7898] shadow-[inset_0_1px_0_rgba(255,255,255,0.9)] outline-none transition focus:border-[#1f7dff] focus:ring-2 focus:ring-[#a5e8ff] disabled:opacity-50"
             style={{ minHeight: "7.5rem", height: "7.5rem" }}
-            placeholder={isReady ? "Type a message…" : "Loading model…"}
+            placeholder={
+              isReady
+                ? "Type a message…"
+                : agentMode === "ollama"
+                  ? "Connect Ollama…"
+                  : "Loading model…"
+            }
             value={input}
             onChange={(e) => {
               setInput(e.target.value);
@@ -82,12 +91,12 @@ function ChatInput({ showDisclaimer, animated }: ChatInputProps) {
             autoFocus
           />
 
-          <div className="absolute bottom-2 left-2 right-2 flex items-center justify-end pb-3 px-2">
+          <div className="absolute bottom-2 left-2 right-2 flex items-center justify-end px-2 pb-3">
             {isGenerating ? (
               <button
                 type="button"
                 onClick={stop}
-                className="flex items-center justify-center rounded-lg text-[#6d6d6d] hover:text-black transition-colors cursor-pointer"
+                className="flex cursor-pointer items-center justify-center rounded-lg text-[#557296] transition-colors hover:text-[#0b52d8]"
                 title="Stop generating"
               >
                 <Square className="h-4 w-4 fill-current" />
@@ -96,7 +105,7 @@ function ChatInput({ showDisclaimer, animated }: ChatInputProps) {
               <button
                 type="submit"
                 disabled={!isReady || !input.trim()}
-                className="flex items-center justify-center rounded-lg text-[#6d6d6d] hover:text-black disabled:opacity-30 transition-colors cursor-pointer"
+                className="flex cursor-pointer items-center justify-center rounded-lg text-[#557296] transition-colors hover:text-[#0b52d8] disabled:opacity-30"
                 title="Send message"
               >
                 <Send className="h-4 w-4" />
@@ -106,21 +115,17 @@ function ChatInput({ showDisclaimer, animated }: ChatInputProps) {
         </div>
       </form>
 
-      {showDisclaimer && (
-        <p className="mx-auto max-w-3xl mt-1 text-center text-xs text-[#6d6d6d]">
-          No chats are sent to a server. Everything runs locally in your
-          browser. AI can make mistakes. Check important info.
-        </p>
-      )}
+      {showDisclaimer && null}
     </div>
   );
 }
 
 interface ChatAppProps {
   onGoHome: () => void;
+  onLogout: () => void;
 }
 
-export function ChatApp({ onGoHome }: ChatAppProps) {
+export function ChatApp({ onGoHome, onLogout }: ChatAppProps) {
   const { messages, isGenerating, send, status, clearChat } = useLLM();
   const scrollRef = useRef<HTMLElement>(null);
 
@@ -137,6 +142,22 @@ export function ChatApp({ onGoHome }: ChatAppProps) {
   const hasMessages = messages.length > 0;
   const showNewChat = isReady && hasMessages && !isGenerating;
 
+  const exportConversation = useCallback(() => {
+    if (!messages.length) return;
+
+    const markdown = messages
+      .map((msg) => `## ${msg.role}\n\n${msg.content}${msg.reasoning ? `\n\n### reasoning\n\n${msg.reasoning}` : ""}`)
+      .join("\n\n");
+
+    const blob = new Blob([markdown], { type: "text/markdown;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `workspace-${Date.now()}.md`;
+    link.click();
+    URL.revokeObjectURL(url);
+  }, [messages]);
+
   useEffect(() => {
     const el = scrollRef.current;
     if (el) {
@@ -147,7 +168,11 @@ export function ChatApp({ onGoHome }: ChatAppProps) {
   useEffect(() => {
     if (prevIsGeneratingRef.current && !isGenerating) {
       const lastMsg = messagesRef.current.at(-1);
-      if (lastMsg?.role === "assistant" && lastMsg.reasoning && thinkingSecondsRef.current > 0) {
+      if (
+        lastMsg?.role === "assistant" &&
+        lastMsg.reasoning &&
+        thinkingSecondsRef.current > 0
+      ) {
         thinkingSecondsMapRef.current.set(lastMsg.id, thinkingSecondsRef.current);
       }
     }
@@ -176,78 +201,129 @@ export function ChatApp({ onGoHome }: ChatAppProps) {
 
   const lastAssistant = messages.at(-1);
   useEffect(() => {
-    if (isGenerating && lastAssistant?.role === "assistant" && lastAssistant.content) {
+    if (
+      isGenerating &&
+      lastAssistant?.role === "assistant" &&
+      lastAssistant.content
+    ) {
       thinkingStartRef.current = null;
     }
   }, [isGenerating, lastAssistant?.role, lastAssistant?.content]);
 
   return (
-    <div className="flex h-full flex-col brand-surface text-black">
-      <header className="flex-none flex items-center justify-between border-b border-[#0000001f] px-6 py-3 h-14">
-        <button
-          onClick={onGoHome}
-          className="cursor-pointer transition-transform duration-300 hover:scale-[1.02]"
-          title="Back to home"
-        >
-          <img
-            src="/liquid.svg"
-            alt="Liquid AI"
-            className="h-6 w-auto"
-            draggable={false}
-          />
-        </button>
-        <button
-          onClick={clearChat}
-          className={`flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs text-[#6d6d6d] hover:text-black hover:bg-[#f5f5f5] transition-opacity duration-300 cursor-pointer ${
-            showNewChat ? "opacity-100" : "opacity-0 pointer-events-none"
-          }`}
-          title="New chat"
-        >
-          <Plus className="h-3.5 w-3.5" />
-          New chat
-        </button>
+    <div className="brand-surface relative flex h-full flex-col overflow-hidden text-[#081325]">
+      <div className="landing-brand-glow absolute inset-0" />
+      <div className="brand-grid" />
+      <FloatingGhost />
+
+      <header className="brand-chrome relative z-10 mx-3 mt-3 flex h-auto flex-col gap-3 rounded-[1.4rem] px-4 py-3 sm:mx-5 sm:flex-row sm:items-center sm:justify-between sm:px-5">
+        <div className="flex items-center gap-3">
+          <button
+            onClick={onGoHome}
+            className="inline-flex cursor-pointer items-center gap-2 rounded-full border border-white/55 bg-white/60 px-3 py-2 text-xs font-medium text-[#11367b] transition hover:border-[#9bdfff] hover:text-[#0b52d8]"
+            title="Back to home"
+          >
+            <House className="h-3.5 w-3.5" />
+            home
+          </button>
+        </div>
+
+        <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center sm:justify-end">
+          <AgentModeControls compact />
+          <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto sm:justify-end">
+            <button
+              onClick={exportConversation}
+              className={`rounded-full border border-white/55 bg-white/60 px-3 py-2 text-xs font-medium text-[#11367b] transition hover:border-[#9bdfff] hover:text-[#0b52d8] ${
+                hasMessages ? "opacity-100" : "pointer-events-none opacity-0"
+              }`}
+              title="Export conversation"
+            >
+              <span className="inline-flex items-center gap-1.5">
+                <Download className="h-3.5 w-3.5" />
+                export
+              </span>
+            </button>
+            <a
+              href="https://github.com/jdgiles26"
+              target="_blank"
+              rel="noreferrer"
+              className="rounded-full border border-white/55 bg-white/60 px-3 py-2 text-xs font-medium text-[#11367b] transition hover:border-[#9bdfff] hover:text-[#0b52d8]"
+            >
+              github
+            </a>
+            <button
+              onClick={clearChat}
+              className={`rounded-full border border-white/55 bg-white/60 px-3 py-2 text-xs font-medium text-[#11367b] transition hover:border-[#9bdfff] hover:text-[#0b52d8] ${
+                showNewChat ? "opacity-100" : "pointer-events-none opacity-0"
+              }`}
+              title="New chat"
+            >
+              <span className="inline-flex items-center gap-1.5">
+                <Plus className="h-3.5 w-3.5" />
+                new chat
+              </span>
+            </button>
+            <button
+              onClick={onLogout}
+              className="rounded-full border border-white/55 bg-white/60 px-3 py-2 text-xs font-medium text-[#11367b] transition hover:border-[#9bdfff] hover:text-[#0b52d8]"
+              title="Logout"
+            >
+              <span className="inline-flex items-center gap-1.5">
+                <LogOut className="h-3.5 w-3.5" />
+                logout
+              </span>
+            </button>
+          </div>
+        </div>
       </header>
 
       {!hasMessages ? (
-        <div className="flex flex-1 flex-col items-center justify-center px-4">
+        <div className="relative z-10 flex flex-1 flex-col items-center justify-center px-4">
           <div className="mb-8 text-center animate-rise-in">
-            <p className="text-3xl font-medium text-black">
-              What can I help you with?
+            <p className="mt-3 text-3xl font-medium tracking-[-0.04em] text-[#081325]">
+              Start a conversation
             </p>
           </div>
 
           <ChatInput showDisclaimer={false} animated />
 
-          <div className="mt-6 flex flex-wrap justify-center gap-2 max-w-3xl animate-rise-in-delayed">
+          <div className="mt-6 flex max-w-3xl flex-wrap justify-center gap-2 animate-rise-in-delayed">
             {EXAMPLE_PROMPTS.map(({ label, prompt }) => (
               <button
                 key={label}
                 onClick={() => send(prompt)}
-                className="rounded-lg border border-[#0000001f] bg-white px-3 py-2 text-xs text-[#6d6d6d] hover:text-black hover:border-[#5505af] transition-colors cursor-pointer shadow-sm"
+                className="rounded-full border border-white/55 bg-white/62 px-4 py-2 text-xs text-[#44617f] shadow-[0_10px_24px_rgba(21,83,177,0.08)] transition-colors hover:border-[#81d8ff] hover:text-[#0b52d8] cursor-pointer"
               >
                 {label}
               </button>
             ))}
           </div>
+
+          <EngineerWorkflowPresets />
         </div>
       ) : (
         <>
           <main
             ref={scrollRef}
-            className="min-h-0 flex-1 overflow-y-auto px-4 py-6 animate-fade-in"
+            className="relative z-10 min-h-0 flex-1 overflow-y-auto px-4 py-6 animate-fade-in"
           >
             <div className="mx-auto flex max-w-3xl flex-col gap-4">
               {!isReady && <StatusBar />}
 
               {messages.map((msg, i) => {
-                const isLast = i === messages.length - 1 && msg.role === "assistant";
+                const isLast =
+                  i === messages.length - 1 && msg.role === "assistant";
                 return (
                   <MessageBubble
                     key={msg.id}
                     msg={msg}
                     index={i}
                     isStreaming={isGenerating && isLast}
-                    thinkingSeconds={isLast ? thinkingSeconds : thinkingSecondsMapRef.current.get(msg.id)}
+                    thinkingSeconds={
+                      isLast
+                        ? thinkingSeconds
+                        : thinkingSecondsMapRef.current.get(msg.id)
+                    }
                     isGenerating={isGenerating}
                   />
                 );
@@ -255,9 +331,9 @@ export function ChatApp({ onGoHome }: ChatAppProps) {
             </div>
           </main>
 
-          <footer className="flex-none px-4 py-3 animate-fade-in relative">
+          <footer className="relative z-10 flex-none px-4 py-3 animate-fade-in">
             {isReady && (
-              <div className="absolute bottom-full left-0 right-0 flex justify-center pointer-events-none mb-[-8px]">
+              <div className="pointer-events-none absolute bottom-full left-0 right-0 mb-[-8px] flex justify-center">
                 <div className="pointer-events-auto">
                   <StatusBar />
                 </div>

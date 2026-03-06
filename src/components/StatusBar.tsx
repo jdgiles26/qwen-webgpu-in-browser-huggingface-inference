@@ -6,13 +6,13 @@ export function StatusBar() {
 
   if (status.state === "loading") {
     return (
-      <div className="flex flex-col items-center gap-2 py-12 text-[#6d6d6d]">
-        <Loader2 className="h-8 w-8 animate-spin text-[#5505af]" />
+      <div className="brand-chrome flex flex-col items-center gap-2 rounded-[1.25rem] px-6 py-4 text-[#557296]">
+        <Loader2 className="h-8 w-8 animate-spin text-[#0b52d8]" />
         <p className="text-sm">{status.message ?? "Loading model…"}</p>
         {status.progress != null && (
-          <div className="w-64 h-2 bg-[#e5e5e5] rounded-full overflow-hidden">
+          <div className="h-2 w-64 overflow-hidden rounded-full bg-[#d6ebff]">
             <div
-              className="h-full bg-[#5505af]"
+              className="h-full bg-[linear-gradient(90deg,#0b52d8_0%,#1f7dff_55%,#8ff2ff_100%)]"
               style={{ width: `${status.progress}%` }}
             />
           </div>
@@ -31,7 +31,7 @@ export function StatusBar() {
 
   if (isGenerating && tps > 0) {
     return (
-      <div className="text-center text-xs text-[#6d6d6d] py-1">
+      <div className="rounded-full border border-white/60 bg-white/60 px-3 py-1 text-center text-xs text-[#557296] shadow-[0_8px_30px_rgba(21,83,177,0.08)]">
         {tps} tokens/s
       </div>
     );
