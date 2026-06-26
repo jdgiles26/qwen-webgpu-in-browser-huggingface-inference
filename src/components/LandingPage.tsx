@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import {
   Loader2,
   ArrowUpRight,
-  LogOut,
   Sparkles,
 } from "lucide-react";
 import type { LoadingStatus } from "../hooks/LLMContext";
@@ -12,7 +11,6 @@ import { useLLM } from "../hooks/useLLM";
 
 interface LandingPageProps {
   onStart: () => void;
-  onLogout: () => void;
   status: LoadingStatus;
   isLoading: boolean;
   showChat: boolean;
@@ -20,7 +18,6 @@ interface LandingPageProps {
 
 export function LandingPage({
   onStart,
-  onLogout,
   status,
   isLoading,
   showChat,
@@ -69,13 +66,6 @@ export function LandingPage({
             >
               github
             </a>
-            <button
-              onClick={onLogout}
-              className="inline-flex items-center gap-2 rounded-full border border-white/55 bg-white/55 px-4 py-2 text-xs font-medium text-[#11367b] shadow-[0_8px_30px_rgba(14,82,183,0.12)] backdrop-blur-md transition hover:border-[#9bdfff] hover:text-[#0b52d8]"
-            >
-              <LogOut className="h-3.5 w-3.5" />
-              logout
-            </button>
           </div>
         </header>
 

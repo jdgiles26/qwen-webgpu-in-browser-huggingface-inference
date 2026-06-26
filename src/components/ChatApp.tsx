@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { Send, Square, Plus, LogOut, House, Download } from "lucide-react";
+import { Send, Square, Plus, House, Download } from "lucide-react";
 
 import { useLLM } from "../hooks/useLLM";
 import { MessageBubble } from "./MessageBubble";
@@ -122,10 +122,9 @@ function ChatInput({ showDisclaimer, animated }: ChatInputProps) {
 
 interface ChatAppProps {
   onGoHome: () => void;
-  onLogout: () => void;
 }
 
-export function ChatApp({ onGoHome, onLogout }: ChatAppProps) {
+export function ChatApp({ onGoHome }: ChatAppProps) {
   const { messages, isGenerating, send, status, clearChat } = useLLM();
   const scrollRef = useRef<HTMLElement>(null);
 
@@ -261,16 +260,6 @@ export function ChatApp({ onGoHome, onLogout }: ChatAppProps) {
               <span className="inline-flex items-center gap-1.5">
                 <Plus className="h-3.5 w-3.5" />
                 new chat
-              </span>
-            </button>
-            <button
-              onClick={onLogout}
-              className="rounded-full border border-white/55 bg-white/60 px-3 py-2 text-xs font-medium text-[#11367b] transition hover:border-[#9bdfff] hover:text-[#0b52d8]"
-              title="Logout"
-            >
-              <span className="inline-flex items-center gap-1.5">
-                <LogOut className="h-3.5 w-3.5" />
-                logout
               </span>
             </button>
           </div>
