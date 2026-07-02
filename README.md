@@ -1,4 +1,4 @@
-# Qwen WebGPU In-Browser Inference ⚡
+# Qwen WebGPU In-Browser Inference ⚡ URL FREE USE - qwen-webgpu-in-browser-huggingface.vercel.app
 
 A high-performance, modern web application designed to run Large Language Models (LLMs) like **LFM2.5-1.2B-Thinking** entirely on the client side. By leveraging the WebGPU API, this project enables direct, hardware-accelerated AI inference inside the browser without requiring external server compute.
 
