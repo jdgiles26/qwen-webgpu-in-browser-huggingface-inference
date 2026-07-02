@@ -1,16 +1,10 @@
----
-title: LFM2.5 1.2B Thinking WebGPU
-emoji: 💧
-colorFrom: pink
-colorTo: blue
-sdk: static
-pinned: false
-short_description: Run LFM2.5-1.2B-Thinking directly in your browser on WebGPU
-app_file: dist/index.html
-models:
-- LiquidAI/LFM2.5-1.2B-Thinking
-- LiquidAI/LFM2.5-1.2B-Thinking-ONNX
-thumbnail: https://cdn-uploads.huggingface.co/production/uploads/61b253b7ac5ecaae3d1efe0c/2wI4YdFiZos3ecNzK8-DT.png
----
-
-Check out the configuration reference at https://huggingface.co/docs/hub/spaces-config-reference
+Qwen WebGPU In-Browser Inference ⚡A high-performance, modern web application designed to run Large Language Models (LLMs) like LFM2.5-1.2B-Thinking entirely on the client side. By leveraging the WebGPU API, this project enables direct, hardware-accelerated AI inference inside the browser without requiring external server compute.✨ Key Features100% Local In-Browser Inference: Privacy-first design. All computation happens directly on your machine's GPU via WebGPU.Hugging Face Integration: Seamlessly fetches and executes ONNX-optimized models from the Hugging Face Hub.Ollama Mode Supported: Includes a polished production mode designed to interface with Ollama for flexible local model management.Frictionless Experience: No password logins or complex backend setups required to test the inference engine.Modern 2026 Tech Stack: Built with blazing-fast Vite, strict TypeScript, and optimized for production deployments.📦 Supported ModelsThis repository is currently configured for the following models via Hugging Face:LiquidAI/LFM2.5-1.2B-ThinkingLiquidAI/LFM2.5-1.2B-Thinking-ONNX (Optimized for WebGPU execution)Note: Performance will scale linearly with your device's GPU capabilities. A dedicated GPU is highly recommended for optimal token generation speeds.🚀 Getting StartedPrerequisitesTo run this application, you must use a modern browser that fully supports the WebGPU API:Chrome 113+ / Edge 113+ (or equivalent Chromium-based browsers)Node.js (v18+ recommended)npm or yarnInstallationClone the repository:Bashgit clone https://github.com/jdgiles26/qwen-webgpu-in-browser-huggingface-inference.git
+cd qwen-webgpu-in-browser-huggingface-inference
+Install dependencies:Bashnpm install
+# or
+yarn install
+Start the development server:Bashnpm run dev
+# or
+yarn dev
+Build for production:Bashnpm run build
+The compiled output will be generated in the dist/ directory, ready to be served statically.🛠 Project StructureDirectory/FileDescriptionsrc/Core application logic, React/TypeScript components, and WebGPU bindings.public/Static assets and demo files.dist/Production build output containing the static index.html.vite.config.tsConfiguration for the Vite build tool.eslint.config.jsStrict linting rules to maintain code quality.🤝 ContributingContributions, issues, and feature requests are welcome. Feel free to check the issues page if you want to contribute.📄 LicenseThis project is configured as public by jdgiles26. Please review the repository files for specific licensing details regarding the inference code and model usage policies dictated by LiquidAI/Hugging Face.
